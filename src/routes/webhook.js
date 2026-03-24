@@ -25,10 +25,12 @@ router.post('/whatsapp', async (req, res) => {
         const from = message.from;
 
         // --- FILTRO DE LISTA BLANCA ---
-        if (env.whitelist.length > 0 && !env.whitelist.some(num => from.includes(num))) {
+        const { isAllowed } = require('../middleware/whitelist');
+        if (!isAllowed(from)) {
             console.log(`⚠️ Mensaje de ${from} IGNORADO (No está en la lista blanca)`);
             return;
         }
+
 
         try {
             await handleIncomingMessage(message);

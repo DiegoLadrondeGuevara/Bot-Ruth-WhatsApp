@@ -40,15 +40,21 @@ app.get('/', (req, res) => {
         service: botConfig.serviceName,
         status: 'running',
         environment: env.nodeEnv,
-        model: env.openrouter.model,
     });
+
 });
+
+const logger = require('./utils/logger');
 
 // --- Manejo de errores global ---
 app.use((err, req, res, next) => {
-    console.error('❌ Error no manejado:', err.message);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    logger.error('Error no manejado en la aplicación', `Express:${req.method}${req.path}`, err);
+    res.status(500).json({ 
+        error: 'Error interno del servidor',
+        message: env.isDev ? err.message : undefined 
+    });
 });
+
 
 // --- Arranque ---
 const start = async () => {
@@ -62,10 +68,10 @@ const start = async () => {
         app.listen(env.port, () => {
             console.log(`\n🚀 ${botConfig.serviceName} operando en puerto ${env.port}`);
             console.log(`   Entorno: ${env.nodeEnv}`);
-            console.log(`   Modelo IA: ${env.openrouter.model}`);
             console.log(`   Imágenes activas en: http://localhost:${env.port}/assets/`);
             console.log(`   Webhook: http://localhost:${env.port}/webhook/whatsapp\n`);
         });
+
     } catch (error) {
         console.error('❌ Error al arrancar el servidor:', error.message);
         process.exit(1);

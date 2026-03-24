@@ -4,7 +4,7 @@ services:
     container_name: ${POSTGRES_CONTAINER_NAME:-chatbot_db}
     restart: unless-stopped
     ports:
-      - "${POSTGRES_PORT:-5435}:5431"
+      - "${POSTGRES_PORT:-5431}:5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-admin}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}

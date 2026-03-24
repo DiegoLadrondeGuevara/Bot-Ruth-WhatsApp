@@ -19,11 +19,10 @@ const ycloud = axios.create({
     timeout: botConfig.timeouts.whatsapp,
 });
 
+const logger = require('../utils/logger');
+
 /**
  * Envía un mensaje de texto por WhatsApp.
- * @param {string} to — Número del destinatario (formato internacional, ej: +5215512345678).
- * @param {string} text — Contenido del mensaje.
- * @returns {Promise<object>} — Respuesta de la API de YCloud.
  */
 const sendMessage = async (to, text) => {
     try {
@@ -34,13 +33,16 @@ const sendMessage = async (to, text) => {
             text: { body: text },
         });
 
-        console.log(`✅ Mensaje enviado a ${to}`);
+        logger.info(`Mensaje enviado a ${to}`, 'WhatsAppService');
         return response.data;
     } catch (error) {
-        console.error(`❌ Error al enviar mensaje a ${to}:`, error.response?.data || error.message);
+        const errorDetail = error.response?.data || error.message;
+        logger.error(`Fallo al enviar mensaje a ${to}`, 'WhatsAppService', error);
+        console.error('Detalle técnico YCloud:', JSON.stringify(errorDetail, null, 2));
         throw error;
     }
 };
+
 
 /**
  * Envía un template de WhatsApp pre-aprobado.

@@ -8,14 +8,14 @@ const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
 // 1. Variables requeridas ACTUALIZADAS
-// Añadimos GOOGLE_SPREADSHEET_ID porque sin esto no se guardan las inscripciones
 const REQUIRED_VARS = [
     'YCLOUD_API_KEY',
     'YCLOUD_WHATSAPP_NUMBER',
-    'OPENROUTER_API_KEY',
     'DATABASE_URL',
-    'GOOGLE_SPREADSHEET_ID' // <--- Obligatorio ahora
+    'GOOGLE_SPREADSHEET_ID'
 ];
+
+
 
 const missing = REQUIRED_VARS.filter((key) => !process.env[key]);
 if (missing.length > 0) {
@@ -44,12 +44,7 @@ const env = {
         phoneNumberId: process.env.YCLOUD_PHONE_NUMBER_ID || '',
     },
 
-    openrouter: {
-        apiKey: process.env.OPENROUTER_API_KEY,
-        apiUrl: process.env.OPENROUTER_API_URL || 'https://openrouter.ai/api/v1',
-        // Cambiamos el default al modelo que usaremos
-        model: process.env.OPENROUTER_MODEL || 'google/gemini-2.0-flash-001',
-    },
+
 
     whitelist: parseWhitelist(),
 
