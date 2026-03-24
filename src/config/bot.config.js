@@ -60,17 +60,38 @@ module.exports = {
         idleTimeoutMillis: 30000,
         connectionTimeoutMillis: 5000,
     },
+    // --- Configuración de Flujo y Validación ---
+    flow: {
+        timeoutMinutes: 10,
+        maxNameRetries: 3,
+        invalidNameKeywords: ['hola', 'cotizar', 'quiero', 'lista', 'pedido', 'buenas', 'buenos dias', 'ayuda', 'asesor', 'hola buen día'],
+        orderEndKeywords: ['listo', 'seria todo', 'con eso', 'nada mas', 'terminar', 'cerrar'],
+        welcomeKeywords: ['hola', 'buenas', 'buenos dias', 'buen dia', 'cotizar', 'cotizacion', 'ayuda', 'asesor', 'hola buen día', 'me gustaría cotizar'],
+        costs: { cooler: 26, reinforced: 10 },
+    },
+
+
+
     // src/config/bot.config.js
     // src/config/bot.config.js
     assets: {
-        baseUrl: env.assets.baseUrl,
+        baseUrl: env.assetsBaseUrl || "https://demo-bot-ruth.s3.us-east-1.amazonaws.com/",
         map: {
-            "catalogo": "catalogo_general.pdf",
+            "catalogo": "https://www.canva.com/design/DAHCR5xEBTI/0uzhiEnlvdg59ZdVmCnBVQ/watch?utm_content=DAHCR5xEBTI&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hb49804ff6d",
             "promo": "promo_semana.jpg",
+            "pasos_envio": "pasos_para+_enviar_tu_pedido.jpg",
+            "importante_envio": "importante_provincia.jpg",
+            "promo_pascua_1": "oferta1_obleas_bitter.jpg",
+            "promo_pascua_2": "oferta2_obleas_sabor_a_chocolate_blanco.jpg",
         },
+
+
         captions: {
             "promo_semana.jpg": `🔥 ¡PROMO DE LA SEMANA EN DULCE RUTH! 🔥\n\nAprovecha nuestras ofertas exclusivas para pastelerías y emprendedores.`,
+            "oferta1_obleas_bitter.jpg": `✨ ¡NUEVA OFERTA DE PASCUA! ✨\n\nObleas Bitter de alta calidad para tus preparaciones más exquisitas. 🍫`,
+            "oferta2_obleas_sabor_a_chocolate_blanco.jpg": `🐰 DULCE PASCUA CON DULCE RUTH 🐰\n\nObleas sabor a Chocolate Blanco, ¡ideales para esta temporada! 🥚`,
         }
+
     },
 
     // ── Ruta al System Prompt ──

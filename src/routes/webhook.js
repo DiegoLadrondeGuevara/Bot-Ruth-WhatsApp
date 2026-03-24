@@ -24,12 +24,13 @@ router.post('/whatsapp', async (req, res) => {
         const message = data.whatsappInboundMessage;
         const from = message.from;
 
-        // --- FILTRO DE LISTA BLANCA ---
-        const { isAllowed } = require('../middleware/whitelist');
-        if (!isAllowed(from)) {
-            console.log(`⚠️ Mensaje de ${from} IGNORADO (No está en la lista blanca)`);
-            return;
-        }
+        // --- FILTRO DE LISTA BLANCA (Deshabilitado para pruebas) ---
+        // const { isAllowed } = require('../middleware/whitelist');
+        // if (!isAllowed(from)) {
+        //     console.log(`⚠️ Mensaje de ${from} IGNORADO (No está en la lista blanca)`);
+        //     return;
+        // }
+
 
 
         try {

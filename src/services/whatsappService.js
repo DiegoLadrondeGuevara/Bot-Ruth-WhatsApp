@@ -88,6 +88,7 @@ const sendTemplate = async (to, templateName, params = []) => {
  */
 const sendImage = async (to, imageUrl, caption = '') => {
     try {
+        console.log(`📤 Enviando imagen a ${to}. URL: ${imageUrl}`);
         const payload = {
             from: env.ycloud.whatsappNumber,
             to,
@@ -97,12 +98,14 @@ const sendImage = async (to, imageUrl, caption = '') => {
         if (caption) payload.image.caption = caption;
 
         const response = await ycloud.post('/whatsapp/messages', payload);
-        console.log(`✅ Imagen enviada a ${to}`);
+        console.log(`✅ Imagen enviada con éxito a ${to}`);
         return response.data;
     } catch (error) {
-        console.error(`❌ Error al enviar imagen a ${to}:`, error.response?.data || error.message);
+        console.error(`❌ Fallo al enviar imagen a ${to}. URL intentada: ${imageUrl}`);
+        console.error(`Detalle error YCloud:`, error.response?.data || error.message);
         throw error;
     }
+
 };
 
 /**

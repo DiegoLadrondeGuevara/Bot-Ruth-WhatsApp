@@ -65,7 +65,37 @@ const start = async () => {
         // Verificar conexión a Google Sheets
         await initializeSheet();
 
+        // 🔗 MONITOR DE TIMEOUT (Cada 1 minuto)
+        setInterval(async () => {
+            try {
+                const timeoutLimit = botConfig.flow.timeoutMinutes;
+                const result = await pool.query(
+                    `SELECT phone FROM clients 
+                     WHERE metadata->>'stage' = 'AWAITING_ORDER_LIST' 
+                     AND last_contact < NOW() - INTERVAL '${timeoutLimit} minutes'`
+                );
+
+                for (const row of result.rows) {
+                    const phone = row.phone;
+                    logger.info(`Session timeout for ${phone}. Referring to advisor automatically.`, 'TimeoutMonitor');
+                    
+                    // Notificar al usuario
+                    const { sendMessage } = require('./services/whatsappService');
+                    await sendMessage(phone, 'Veo que ha pasado un tiempo. Para no hacerte esperar, te derivaré directamente con un asesor para que te ayude con tu cotización. 👨‍🍳');
+                    
+                    // Resetear estado
+                    await pool.query(
+                        "UPDATE clients SET metadata = jsonb_set(metadata, '{stage}', '\"WELCOME\"') WHERE phone = $1",
+                        [phone]
+                    );
+                }
+            } catch (monitorError) {
+                logger.error('Error en Monitor de Timeout', 'System', monitorError);
+            }
+        }, 60000); // Revisar cada minuto
+
         app.listen(env.port, () => {
+
             console.log(`\n🚀 ${botConfig.serviceName} operando en puerto ${env.port}`);
             console.log(`   Entorno: ${env.nodeEnv}`);
             console.log(`   Imágenes activas en: http://localhost:${env.port}/assets/`);
