@@ -193,4 +193,28 @@ const sendDocument = async (to, documentUrl, filename = '') => {
     }
 };
 
-module.exports = { sendMessage, sendTemplate, sendImage, sendVideo, sendLocation, sendDocument };
+/**
+ * Envia un sticker por WhatsApp.
+ * @param {string} to - Numero del destinatario.
+ * @param {string} stickerUrl - URL publica del sticker (WebP).
+ * @returns {Promise<object>} - Respuesta de YCloud.
+ */
+const sendSticker = async (to, stickerUrl) => {
+    try {
+        const payload = {
+            from: env.ycloud.whatsappNumber,
+            to,
+            type: 'sticker',
+            sticker: { link: stickerUrl },
+        };
+
+        const response = await ycloud.post('/whatsapp/messages', payload);
+        console.log(`✅ Sticker enviado a ${to}`);
+        return response.data;
+    } catch (error) {
+        console.error(`❌ Error al enviar sticker a ${to}:`, error.response?.data || error.message);
+        throw error;
+    }
+};
+
+module.exports = { sendMessage, sendTemplate, sendImage, sendVideo, sendLocation, sendDocument, sendSticker };

@@ -21,7 +21,7 @@ module.exports = {
 
     // ── Mensajes Estructurados por Escenario ──
     messages: {
-        welcome: '¡Hola! Te saluda el asistente virtual de Dulce Ruth. 🍰\n\n¿En qué podemos ayudarte hoy? Si eres de provincia o estás en Lima, cuéntanos para darte la mejor atención.',
+        welcome: '¡Hola! 🌸 Qué alegría saludarte. Te damos la bienvenida a Dulce Ruth, tu rincón favorito para la repostería. 🍰✨\n\n¿Cómo podemos endulzar tu día hoy? Si eres de provincia o estás en Lima, cuéntanos para darte la mejor atención. 😊',
     },
 
     // ── Tarifas (Ejemplo, adaptables) ──
@@ -67,6 +67,8 @@ module.exports = {
         invalidNameKeywords: ['hola', 'cotizar', 'quiero', 'lista', 'pedido', 'buenas', 'buenos dias', 'ayuda', 'asesor', 'hola buen día'],
         orderEndKeywords: ['listo', 'seria todo', 'con eso', 'nada mas', 'terminar', 'cerrar'],
         welcomeKeywords: ['hola', 'buenas', 'buenos dias', 'buen dia', 'cotizar', 'cotizacion', 'ayuda', 'asesor', 'hola buen día', 'me gustaría cotizar'],
+        handoffKeywords: ['asesor', 'humano', 'vendedor', 'ayuda', 'persona', 'atención'],
+        reactivationCommand: 'activar bot',
         costs: { cooler: 26, reinforced: 10 },
     },
 
@@ -77,12 +79,13 @@ module.exports = {
     assets: {
         baseUrl: env.assetsBaseUrl || "https://demo-bot-ruth.s3.us-east-1.amazonaws.com/",
         map: {
-            "catalogo": "https://www.canva.com/design/DAHCR5xEBTI/0uzhiEnlvdg59ZdVmCnBVQ/watch?utm_content=DAHCR5xEBTI&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hb49804ff6d",
-            "promo": "promo_semana.jpg",
-            "pasos_envio": "pasos_para+_enviar_tu_pedido.jpg",
-            "importante_envio": "importante_provincia.jpg",
-            "promo_pascua_1": "oferta1_obleas_bitter.jpg",
-            "promo_pascua_2": "oferta2_obleas_sabor_a_chocolate_blanco.jpg",
+            "catalogo_pascua": "campa%C3%B1a/campanha_pascua.pdf",
+            "catalogo_madre": "campa%C3%B1a/campanha_diadelamadre.pdf",
+            "promo": "ofertas/oferta1_obleas_bitter.jpg", // Usamos una de las nuevas ofertas como promo principal por ahora
+            "pasos_envio": "informacion-usuario/pasos_para+_enviar_tu_pedido.jpg",
+            "importante_envio": "informacion-usuario/importante_provincia.jpg",
+            "promo_pascua_1": "ofertas/oferta1_obleas_bitter.jpg",
+            "promo_pascua_2": "ofertas/oferta2_obleas_sabor_a_chocolate_blanco.jpg",
         },
 
 

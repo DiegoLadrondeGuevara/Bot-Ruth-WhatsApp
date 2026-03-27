@@ -31,6 +31,7 @@ const initDatabase = async () => {
         first_contact TIMESTAMPTZ DEFAULT NOW(),
         last_contact TIMESTAMPTZ DEFAULT NOW(),
         message_count INTEGER DEFAULT 1,
+        is_bot_active BOOLEAN DEFAULT TRUE,
         metadata JSONB DEFAULT '{}'
       );
     `);
@@ -50,6 +51,16 @@ const initDatabase = async () => {
     await client.query(`CREATE INDEX IF NOT EXISTS idx_conversations_phone ON conversations(phone);`);
     await client.query(`CREATE INDEX IF NOT EXISTS idx_conversations_created ON conversations(created_at DESC);`);
     await client.query(`CREATE INDEX IF NOT EXISTS idx_clients_phone ON clients(phone);`);
+    
+    // 3. Migración: Añadir is_bot_active si no existe (para DBs ya creadas)
+    await client.query(`
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='clients' AND column_name='is_bot_active') THEN
+          ALTER TABLE clients ADD COLUMN is_bot_active BOOLEAN DEFAULT TRUE;
+        END IF;
+      END $$;
+    `);
 
     console.log('✅ Base de datos inicializada (Estructura de 3 escenarios lista)');
   } catch (error) {

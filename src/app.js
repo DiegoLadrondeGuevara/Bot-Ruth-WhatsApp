@@ -6,7 +6,7 @@
 const express = require('express');
 const path = require('path'); // Importante para las rutas de archivos
 const env = require('./config/env');
-const { initDatabase } = require('./config/database');
+const { pool, initDatabase } = require('./config/database');
 const webhookRoutes = require('./routes/webhook');
 const { initializeSheet } = require('./services/googleSheetsService');
 const botConfig = require('./config/bot.config');
@@ -68,6 +68,7 @@ const start = async () => {
         // 🔗 MONITOR DE TIMEOUT (Cada 1 minuto)
         setInterval(async () => {
             try {
+                // 🔗 1. TIMEOUT DE PEDIDOS (10 min)
                 const timeoutLimit = botConfig.flow.timeoutMinutes;
                 const result = await pool.query(
                     `SELECT phone FROM clients 
@@ -79,15 +80,26 @@ const start = async () => {
                     const phone = row.phone;
                     logger.info(`Session timeout for ${phone}. Referring to advisor automatically.`, 'TimeoutMonitor');
                     
-                    // Notificar al usuario
                     const { sendMessage } = require('./services/whatsappService');
                     await sendMessage(phone, 'Veo que ha pasado un tiempo. Para no hacerte esperar, te derivaré directamente con un asesor para que te ayude con tu cotización. 👨‍🍳');
                     
-                    // Resetear estado
                     await pool.query(
                         "UPDATE clients SET metadata = jsonb_set(metadata, '{stage}', '\"WELCOME\"') WHERE phone = $1",
                         [phone]
                     );
+                }
+
+                // 🔗 2. AUTO-REACTIVACIÓN (24 horas)
+                const reactivations = await pool.query(
+                    `SELECT phone FROM clients 
+                     WHERE is_bot_active = false 
+                     AND last_contact < NOW() - INTERVAL '24 hours'`
+                );
+
+                for (const row of reactivations.rows) {
+                    const phone = row.phone;
+                    logger.info(`Auto-reactivating bot for ${phone} after 24h inactivity.`, 'TimeoutMonitor');
+                    await pool.query("UPDATE clients SET is_bot_active = true WHERE phone = $1", [phone]);
                 }
             } catch (monitorError) {
                 logger.error('Error en Monitor de Timeout', 'System', monitorError);
